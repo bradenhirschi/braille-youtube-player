@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube ASCII Player</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form id="form">
+    <input id="url" placeholder="Paste YouTube URL" style="width: 400px;">
+    <button>Play</button>
+  </form>
+  <pre id="output"></pre>
+
+  <script>
+    const form = document.getElementById('form');
+    const output = document.getElementById('output');
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      output.textContent = "Loading...";
+      const ws = new WebSocket(`ws://${location.host}/ascii`);
+
+      ws.onopen = () => ws.send(document.getElementById('url').value);
+      ws.onmessage = e => output.textContent = e.data;
+      ws.onclose = () => console.log("Stream ended");
+    };
+  </script>
+</body>
+</html>
